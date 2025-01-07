@@ -15,6 +15,9 @@ public class FinalProjectKel5 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        LoginMenu logMenu = new LoginMenu();
+        logMenu.setLocationRelativeTo(null);
+        logMenu.setVisible(true);
 
     }
     
