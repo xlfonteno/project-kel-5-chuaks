@@ -23,6 +23,8 @@ public class MainMenu extends javax.swing.JFrame {
         initializeTable();
     }
     
+   
+    
     private void initializeTable() {
     tableModel = (DefaultTableModel) habitTable.getModel();
     tableModel.setRowCount(0);
@@ -38,6 +40,20 @@ public class MainMenu extends javax.swing.JFrame {
         return true;
     }
     
+    public boolean editHabit(String oldName, String newName) {
+        if (habitMap.containsKey(newName)){
+            return false;
+        }
+        Boolean status = habitMap.remove(oldName);
+        habitMap.put(newName, status);
+        updateTable();
+        return true;
+    }
+    public void deleteHabit(String habitName) {
+        habitMap.remove(habitName);
+        updateTable();
+    }
+    
     public void updateTable() {
     tableModel.setRowCount(0);
     for (Map.Entry<String, Boolean> entry: habitMap.entrySet()){
@@ -51,12 +67,6 @@ public class MainMenu extends javax.swing.JFrame {
         String habitName = (String) tableModel.getValueAt(rowIndex, 0);
         boolean currentStatus = habitMap.get(habitName);
         habitMap.put(habitName, !currentStatus);
-        updateTable();
-    }
-    
-    public void editHabit(String oldName, String newName){
-        Boolean status = habitMap.remove(oldName);
-        habitMap.put(newName, status);
         updateTable();
     }
     
@@ -151,6 +161,11 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         editHabitBtn.setText("Edit Habit");
+        editHabitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editHabitBtnActionPerformed(evt);
+            }
+        });
 
         sumBtn.setText("Summary");
 
@@ -264,6 +279,21 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_resetBtnActionPerformed
 
     
+    private void editHabitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editHabitBtnActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = habitTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih habit yang ingin diedit!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String habitName = (String) habitTable.getValueAt(selectedRow, 0);
+        EditHabit eh = new EditHabit();
+        eh.setMainMenu(this);
+        eh.setLocationRelativeTo(null);
+        eh.setVisible(true);
+    }//GEN-LAST:event_editHabitBtnActionPerformed
+        
+    
     /**
      * @param args the command line arguments
      */
@@ -316,6 +346,10 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JButton resetBtn;
     private javax.swing.JButton sumBtn;
     // End of variables declaration//GEN-END:variables
+
+    void updateHabitTable() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
     
 }
