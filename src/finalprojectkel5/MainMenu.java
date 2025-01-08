@@ -4,19 +4,66 @@
  */
 package finalprojectkel5;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class MainMenu extends javax.swing.JFrame {
-    
+    private DefaultTableModel tableModel;
+    private HashMap<String, Boolean> habitMap;
 
     /**
      * Creates new form loginMenu
      */
     public MainMenu() {
         initComponents();
+        habitMap = new HashMap<>();
+        initializeTable();
     }
     
+    private void initializeTable() {
+    tableModel = (DefaultTableModel) habitTable.getModel();
+    tableModel.setRowCount(0);
+    }
+    
+    public boolean addHabit(String habitName){
+        if (habitMap.containsKey(habitName)){
+           return false;
+        }
+        
+        habitMap.put(habitName, false);
+        updateTable();
+        return true;
+    }
+    
+    public void updateTable() {
+    tableModel.setRowCount(0);
+    for (Map.Entry<String, Boolean> entry: habitMap.entrySet()){
+        Object[] row = {
+            entry.getKey(), entry.getValue()};
+        tableModel.addRow(row);
+        }
+    }
+    
+    public void toggleHabitStatus(int rowIndex) {
+        String habitName = (String) tableModel.getValueAt(rowIndex, 0);
+        boolean currentStatus = habitMap.get(habitName);
+        habitMap.put(habitName, !currentStatus);
+        updateTable();
+    }
+    
+    public void editHabit(String oldName, String newName){
+        Boolean status = habitMap.remove(oldName);
+        habitMap.put(newName, status);
+        updateTable();
+    }
+    
+    public void resetHabits() {
+        habitMap.clear();
+        updateTable();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,8 +83,8 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         editHabitBtn = new javax.swing.JButton();
         sumBtn = new javax.swing.JButton();
-        resetBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
+        resetBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("HabitMaker");
@@ -52,11 +99,11 @@ public class MainMenu extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Completed", "Nama Habit"
+                "Habit Name", "Completion"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -72,12 +119,12 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(124, 124, 124)
-                        .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                        .addGap(160, 160, 160)
+                        .addComponent(jLabel1)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,12 +154,17 @@ public class MainMenu extends javax.swing.JFrame {
 
         sumBtn.setText("Summary");
 
-        resetBtn.setText("Reset");
-
         logoutBtn.setText("Log Out");
         logoutBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 logoutBtnActionPerformed(evt);
+            }
+        });
+
+        resetBtn.setText("Reset");
+        resetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetBtnActionPerformed(evt);
             }
         });
 
@@ -126,11 +178,11 @@ public class MainMenu extends javax.swing.JFrame {
                     .addComponent(editHabitBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addHabitBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(sumBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(resetBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(logoutBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(14, 14, 14)))
+                        .addGap(14, 14, 14))
+                    .addComponent(resetBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(57, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -170,6 +222,20 @@ public class MainMenu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setupTableListener(){
+        habitTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt){
+            int row = habitTable.rowAtPoint(evt.getPoint());
+            int col = habitTable.columnAtPoint(evt.getPoint());
+            
+            if (col == 1){
+            toggleHabitStatus(row);
+                }
+            }
+        });
+    }
+    
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         // TODO add your handling code here:
         int input = JOptionPane.showConfirmDialog(null, "Apakah kamu yakin ingin logout?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
@@ -183,10 +249,19 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void addHabitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addHabitBtnActionPerformed
         // TODO add your handling code here:
-        AddHabit ah = new AddHabit();
+        AddHabit ah = new AddHabit(this);
         ah.setLocationRelativeTo(null);
         ah.setVisible(true);
     }//GEN-LAST:event_addHabitBtnActionPerformed
+
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        // TODO add your handling code here:
+        int input = JOptionPane.showConfirmDialog(null, "Apakah kamu yakin ingin reset?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+        if (input == 0){
+            resetHabits();
+            JOptionPane.showMessageDialog(this, "Semua habit sudah direset!");
+        }
+    }//GEN-LAST:event_resetBtnActionPerformed
 
     
     /**
@@ -241,4 +316,6 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JButton resetBtn;
     private javax.swing.JButton sumBtn;
     // End of variables declaration//GEN-END:variables
+
+    
 }

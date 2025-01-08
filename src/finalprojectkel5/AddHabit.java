@@ -4,7 +4,9 @@
  */
 package finalprojectkel5;
 
+import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -12,13 +14,21 @@ import javax.swing.JOptionPane;
  */
 public class AddHabit extends javax.swing.JFrame {
 
+    private MainMenu mainMenu;
+
     /**
      * Creates new form AddHabit
      */
     public AddHabit() {
         initComponents();
     }
-
+    
+    public AddHabit(MainMenu mainMenu) {
+        initComponents();
+        this.mainMenu = mainMenu;
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -104,15 +114,18 @@ public class AddHabit extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
+        MainMenu mm = new MainMenu();
         String habitName = addHabitField.getText().trim();
             if (habitName.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Habit name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (HabitData.addHabit(habitName)) {
-                JOptionPane.showMessageDialog(this, "Habit added successfully!");
+                JOptionPane.showMessageDialog(this, "Habit tidak bisa kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (mainMenu.addHabit(habitName)){
+                JOptionPane.showMessageDialog(this, "Habit berhasil ditambahkan!");
                 addHabitField.setText("");
-                MainMenu mm = new MainMenu();
+                this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Habit already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Habit sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
             }
     }//GEN-LAST:event_addButtonActionPerformed
 
@@ -142,11 +155,12 @@ public class AddHabit extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AddHabit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddHabit().setVisible(true);
+                MainMenu mm = new MainMenu();
+                new AddHabit(mm).setVisible(true);
             }
         });
     }
@@ -158,4 +172,8 @@ public class AddHabit extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+    private void initializeTable() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
