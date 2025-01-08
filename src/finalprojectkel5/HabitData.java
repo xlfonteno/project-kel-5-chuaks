@@ -16,11 +16,11 @@ public class HabitData {
 
     // Tambahkan habit baru
     public static boolean addHabit(String habitName) {
-        if (habits.containsKey(habitName)) {
-            return false; // Habit sudah ada
-        }
-        habits.put(habitName, false); // Default: belum selesai
-        return true;
+    if (habits.containsKey(habitName)) {
+        return false; // Habit sudah ada
+    }
+    habits.put(habitName, false); // Default: belum selesai
+    return true;
     }
 
     // Dapatkan daftar habit
@@ -30,8 +30,8 @@ public class HabitData {
 
     // Reset semua habit
     public static void resetHabits() {
-        for (Map.Entry<String, Boolean> entry : habits.entrySet()) {
-            entry.setValue(false); // Set semua habit ke false
+        for (String habitName : habits.keySet()) {
+            habits.put(habitName, false); // Set semua habit ke false
         }
     }
 

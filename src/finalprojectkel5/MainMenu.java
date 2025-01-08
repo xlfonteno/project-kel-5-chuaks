@@ -30,15 +30,13 @@ public class MainMenu extends javax.swing.JFrame {
     tableModel.setRowCount(0);
     }
     
-    public boolean addHabit(String habitName){
-        if (habitMap.containsKey(habitName)){
-           return false;
-        }
-        
-        habitMap.put(habitName, false);
-        updateTable();
-        return true;
+    public boolean addHabit(String habitName) {
+    boolean added = HabitData.addHabit(habitName); // Panggil metode dari HabitData
+    if (added) {
+        updateTable(); // Perbarui tabel jika habit berhasil ditambahkan
     }
+    return added;
+}
     
     public boolean editHabit(String oldName, String newName) {
         if (habitMap.containsKey(newName)){
@@ -50,18 +48,17 @@ public class MainMenu extends javax.swing.JFrame {
         return true;
     }
     public void deleteHabit(String habitName) {
-        habitMap.remove(habitName);
-        updateTable();
-    }
+        HabitData.getHabits().remove(habitName); // Hapus dari HabitData
+        updateTable(); // Perbarui tabel setelah menghapus habit
+        }
     
     public void updateTable() {
-    tableModel.setRowCount(0);
-    for (Map.Entry<String, Boolean> entry: habitMap.entrySet()){
-        Object[] row = {
-            entry.getKey(), entry.getValue()};
-        tableModel.addRow(row);
-        }
+    tableModel.setRowCount(0); // Kosongkan tabel
+    for (Map.Entry<String, Boolean> entry : HabitData.getHabits().entrySet()) {
+        Object[] row = { entry.getKey(), entry.getValue() };
+        tableModel.addRow(row); // Tambahkan baris baru ke tabel
     }
+}
     
     public void toggleHabitStatus(int rowIndex) {
         String habitName = (String) tableModel.getValueAt(rowIndex, 0);
@@ -283,14 +280,13 @@ public class MainMenu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int selectedRow = habitTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih habit yang ingin diedit!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String habitName = (String) habitTable.getValueAt(selectedRow, 0);
-        EditHabit eh = new EditHabit();
-        eh.setMainMenu(this);
-        eh.setLocationRelativeTo(null);
-        eh.setVisible(true);
+        JOptionPane.showMessageDialog(this, "Pilih habit yang ingin diedit!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    String habitName = (String) habitTable.getValueAt(selectedRow, 0);
+    EditHabit eh = new EditHabit(this, habitName); // Pastikan Anda mengirimkan habitName
+    eh.setLocationRelativeTo(null);
+    eh.setVisible(true);
     }//GEN-LAST:event_editHabitBtnActionPerformed
         
     

@@ -21,13 +21,15 @@ public class EditHabit extends javax.swing.JFrame {
     public EditHabit(){
         initComponents();
     }
-    public void setMainMenu(MainMenu mainMenu){
+    /*public void setMainMenu(MainMenu mainMenu){
         this.mainMenu = mainMenu;
-    }
-    private EditHabit(MainMenu mainMenu, String habitName) {
+    }*/
+    public EditHabit(MainMenu mainMenu, String habitName) {
         initComponents();
         this.mainMenu = mainMenu;
         this.currentHabit = habitName;
+        this.currentStatus = HabitData.getHabits().get(habitName);
+        editHabitField.setText(habitName);
     }
     /*public EditHabit(MainMenu mainMenu, String habitName) {
         initComponents();
@@ -145,35 +147,37 @@ public class EditHabit extends javax.swing.JFrame {
         String newHabitName = editHabitField.getText().trim();
         
         if (newHabitName.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Habit tidak boleh kosong!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        JOptionPane.showMessageDialog(this, "Habit tidak boleh kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
         if (currentHabit.equals(newHabitName)) {
-            JOptionPane.showMessageDialog(this, "Habit tidak berubah!", "Info", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        if (HabitData.getHabits().containsKey(currentHabit)) {
-        // Hapus habit lama, tambahkan habit baru
+        JOptionPane.showMessageDialog(this, "Habit tidak berubah!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+    // Hapus habit lama, tambahkan habit baru
         HabitData.getHabits().remove(currentHabit);
-        HabitData.getHabits().put(newHabitName, !currentStatus);
-
+    
+    // Periksa apakah habit baru sudah ada
+    if (!HabitData.getHabits().containsKey(newHabitName)) {
+        // Tambahkan habit baru dengan status yang sama
+        HabitData.getHabits().put(newHabitName, currentStatus); // Gunakan status yang sama
         JOptionPane.showMessageDialog(this, "Habit updated successfully!");
-        mainMenu.updateTable(); // Perbarui tabel di MainMenuFrame
-        dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Nama habit sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        mainMenu.updateTable(); // Perbarui tabel di MainMenu
+        dispose(); // Tutup jendela EditHabit
+    } else {
+        JOptionPane.showMessageDialog(this, "Nama habit sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_updateBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         // TODO add your handling code here:
         int confirm = JOptionPane.showConfirmDialog(this, "Hapus habit ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
-        
+    
         if (confirm == JOptionPane.YES_OPTION) {
-            mainMenu.deleteHabit(currentHabit);
+            mainMenu.deleteHabit(currentHabit); // Pastikan ini memanggil metode yang benar
             JOptionPane.showMessageDialog(this, "Habit telah dihapus.");
-            mainMenu.updateTable();
-            this.dispose();
+            mainMenu.updateTable(); // Pastikan tabel diperbarui
+            this.dispose(); // Tutup jendela EditHabit
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 

@@ -114,19 +114,19 @@ public class AddHabit extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
-        MainMenu mm = new MainMenu();
         String habitName = addHabitField.getText().trim();
-            if (habitName.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Habit tidak bisa kosong!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (mainMenu.addHabit(habitName)){
-                JOptionPane.showMessageDialog(this, "Habit berhasil ditambahkan!");
-                addHabitField.setText("");
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Habit sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+    if (habitName.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Habit tidak bisa kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    if (mainMenu.addHabit(habitName)) {
+        JOptionPane.showMessageDialog(this, "Habit berhasil ditambahkan!");
+        addHabitField.setText("");
+        mainMenu.updateTable(); // Pastikan untuk memperbarui tabel di MainMenu
+        this.dispose(); // Tutup jendela AddHabit
+    } else {
+        JOptionPane.showMessageDialog(this, "Habit sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_addButtonActionPerformed
 
     /**
