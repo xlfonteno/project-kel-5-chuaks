@@ -94,8 +94,10 @@ public class MainMenu extends javax.swing.JFrame {
     public void toggleHabitStatus(int rowIndex) {
         String habitName = (String) tableModel.getValueAt(rowIndex, 0);
         boolean currentStatus = habitMap.get(habitName);
-        habitMap.put(habitName, !currentStatus);
-        updateTable();
+        boolean newStatus = !currentStatus; // Toggle status
+        habitMap.put(habitName, newStatus); // Update local map
+        HabitData.updateHabitStatus(habitName, newStatus); // Update in HabitData
+        updateTable(); // Refresh the table
     }
     
     public void resetHabits() {
@@ -105,11 +107,7 @@ public class MainMenu extends javax.swing.JFrame {
     
     private void showSummary() {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-    
-    // Ambil data kebiasaan dari HabitData
         HashMap<String, Boolean> habits = HabitData.getHabits();
-
-    // Buat dan tampilkan SummaryFrame
         SummaryFrame summaryFrame = new SummaryFrame(habits, timestamp);
         summaryFrame.setVisible(true);
     }

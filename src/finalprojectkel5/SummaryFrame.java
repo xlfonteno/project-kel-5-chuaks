@@ -23,18 +23,14 @@ public class SummaryFrame extends javax.swing.JFrame {
     public SummaryFrame(HashMap<String, Boolean> habits, String timestamp) {
         initComponents();
         
-        // Ambil username dari UserDatabase
         String username = UserDatabase.getCurrentUsername();
-        usernameLabel.setText("User      :" + username); // Set teks untuk label username
+        usernameLabel.setText("User      : " + username); // Set teks untuk label username
         
-        // Set teks untuk label timestamp
         timestampLabel.setText("Timestamp: " + timestamp);
         
-        // Inisialisasi model tabel
         tableModel = new DefaultTableModel(new String[]{"Habit Name", "Completion Status"}, 0);
         habitsTable.setModel(tableModel); // Set model tabel ke JTable
 
-        // Tambahkan data kebiasaan ke model tabel
         for (Map.Entry<String, Boolean> entry : habits.entrySet()) {
             String habitName = entry.getKey();
             Boolean isCompleted = entry.getValue(); // Ambil nilai Boolean

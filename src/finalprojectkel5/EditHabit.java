@@ -162,7 +162,7 @@ public class EditHabit extends javax.swing.JFrame {
         // Tambahkan habit baru dengan status yang sama
         HabitData.getHabits().put(newHabitName, currentStatus); // Gunakan status yang sama
         JOptionPane.showMessageDialog(this, "Habit updated successfully!");
-        mainMenu.updateTable(); // Perbarui tabel di MainMenu
+        mainMenu.updateTable();
         dispose(); // Tutup jendela EditHabit
     } else {
         JOptionPane.showMessageDialog(this, "Nama habit sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
