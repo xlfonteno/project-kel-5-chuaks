@@ -4,39 +4,70 @@
  */
 package finalprojectkel5;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.Timer;
 
 public class MainMenu extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private HashMap<String, Boolean> habitMap;
-
+    public String username;
     /**
      * Creates new form loginMenu
      */
     public MainMenu() {
+        this.username = UserDatabase.getCurrentUsername();
         initComponents();
         habitMap = new HashMap<>();
         initializeTable();
+        initializeClock();
+        if (username != null) {
+            usernameLabel.setText("Welcome, " + username);
+        } else {
+            usernameLabel.setText("Welcome, Guest");
+        }
     }
-    
-   
     
     private void initializeTable() {
     tableModel = (DefaultTableModel) habitTable.getModel();
     tableModel.setRowCount(0);
     }
+    private void initializeClock() {
+        // Set timer untuk memperbarui waktu setiap detik
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime(); // Panggil metode untuk memperbarui waktu
+            }
+        });
+        timer.start(); // Mulai timer
+
+        updateTime(); // Set waktu awal saat aplikasi dimulai
+    }
+    
+    
+    private void updateTime() {
+        String currentTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
+        String currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+        timeLabel.setText(currentTime);
+        dateLabel.setText(currentDate);
+    }
+    
+
     
     public boolean addHabit(String habitName) {
     boolean added = HabitData.addHabit(habitName); // Panggil metode dari HabitData
     if (added) {
         updateTable(); // Perbarui tabel jika habit berhasil ditambahkan
+        }
+        return added;
     }
-    return added;
-}
     
     public boolean editHabit(String oldName, String newName) {
         if (habitMap.containsKey(newName)){
@@ -57,8 +88,8 @@ public class MainMenu extends javax.swing.JFrame {
     for (Map.Entry<String, Boolean> entry : HabitData.getHabits().entrySet()) {
         Object[] row = { entry.getKey(), entry.getValue() };
         tableModel.addRow(row); // Tambahkan baris baru ke tabel
+        }
     }
-}
     
     public void toggleHabitStatus(int rowIndex) {
         String habitName = (String) tableModel.getValueAt(rowIndex, 0);
@@ -70,6 +101,17 @@ public class MainMenu extends javax.swing.JFrame {
     public void resetHabits() {
         habitMap.clear();
         updateTable();
+    }
+    
+    private void showSummary() {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    
+    // Ambil data kebiasaan dari HabitData
+        HashMap<String, Boolean> habits = HabitData.getHabits();
+
+    // Buat dan tampilkan SummaryFrame
+        SummaryFrame summaryFrame = new SummaryFrame(habits, timestamp);
+        summaryFrame.setVisible(true);
     }
 
     /**
@@ -85,6 +127,11 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         habitTable = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        timeLabel = new javax.swing.JLabel();
+        dateLabel = new javax.swing.JLabel();
+        usernameLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         addHabitBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -119,6 +166,16 @@ public class MainMenu extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(habitTable);
 
+        jLabel3.setText("Waktu :");
+
+        jLabel4.setText("Tanggal :");
+
+        timeLabel.setText("-");
+
+        dateLabel.setText("-");
+
+        usernameLabel.setText("Nama :");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -126,11 +183,23 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(160, 160, 160)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(timeLabel)
+                                .addGap(57, 57, 57)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dateLabel)
+                                .addGap(85, 85, 85)
+                                .addComponent(usernameLabel)))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -140,7 +209,14 @@ public class MainMenu extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(timeLabel)
+                    .addComponent(jLabel4)
+                    .addComponent(dateLabel)
+                    .addComponent(usernameLabel))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(102, 102, 102));
@@ -165,6 +241,11 @@ public class MainMenu extends javax.swing.JFrame {
         });
 
         sumBtn.setText("Summary");
+        sumBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sumBtnActionPerformed(evt);
+            }
+        });
 
         logoutBtn.setText("Log Out");
         logoutBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -212,7 +293,7 @@ public class MainMenu extends javax.swing.JFrame {
                 .addComponent(resetBtn)
                 .addGap(18, 18, 18)
                 .addComponent(logoutBtn)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -220,7 +301,7 @@ public class MainMenu extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -248,6 +329,7 @@ public class MainMenu extends javax.swing.JFrame {
         });
     }
     
+    
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         // TODO add your handling code here:
         int input = JOptionPane.showConfirmDialog(null, "Apakah kamu yakin ingin logout?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
@@ -269,9 +351,10 @@ public class MainMenu extends javax.swing.JFrame {
     private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
         // TODO add your handling code here:
         int input = JOptionPane.showConfirmDialog(null, "Apakah kamu yakin ingin reset?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
-        if (input == 0){
-            resetHabits();
+        if (input == JOptionPane.YES_OPTION){
+            HabitData.clearHabits();
             JOptionPane.showMessageDialog(this, "Semua habit sudah direset!");
+            updateTable();
         }
     }//GEN-LAST:event_resetBtnActionPerformed
 
@@ -288,7 +371,12 @@ public class MainMenu extends javax.swing.JFrame {
     eh.setLocationRelativeTo(null);
     eh.setVisible(true);
     }//GEN-LAST:event_editHabitBtnActionPerformed
-        
+
+    private void sumBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sumBtnActionPerformed
+        // TODO add your handling code here:
+        showSummary();
+    }//GEN-LAST:event_sumBtnActionPerformed
+  
     
     /**
      * @param args the command line arguments
@@ -331,21 +419,23 @@ public class MainMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addHabitBtn;
+    private javax.swing.JLabel dateLabel;
     private javax.swing.JButton editHabitBtn;
     private javax.swing.JTable habitTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton logoutBtn;
     private javax.swing.JButton resetBtn;
     private javax.swing.JButton sumBtn;
+    private javax.swing.JLabel timeLabel;
+    private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 
-    void updateHabitTable() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
     
 }

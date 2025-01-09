@@ -12,6 +12,7 @@ import java.util.HashMap;
  */
 public class UserDatabase {
     private static HashMap<String, String> users = new HashMap<>();
+    private static String currentUsername;
     // Menambah pengguna
     public static boolean addUser(String username, String password) {
         if (users.containsKey(username)) {
@@ -23,6 +24,16 @@ public class UserDatabase {
 
     // Memeriksa login
     public static boolean checkLogin(String username, String password) {
-        return users.containsKey(username) && users.get(username).equals(password);
+        if (users.containsKey(username) && users.get(username).equals(password)) {
+            currentUsername = username; // Simpan username yang sedang login
+            return true;
+        }
+        return false;
+    }
+    
+    
+    // Mendapatkan username yang sedang login
+    public static String getCurrentUsername() {
+        return currentUsername;
     }
 }

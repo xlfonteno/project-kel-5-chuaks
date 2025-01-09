@@ -25,7 +25,7 @@ public class HabitData {
 
     // Dapatkan daftar habit
     public static HashMap<String, Boolean> getHabits() {
-        return habits;
+        return new HashMap<>(habits); // Mengembalikan salinan dari HashMap
     }
 
     // Reset semua habit
